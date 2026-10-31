@@ -1,4 +1,4 @@
-import LencanaStatus from "./LencanaStatus";
+import Status from "./Status";
 import { pecahTanggal } from "../utils/tanggal";
 
 function KartuTugas({ id, nama, matkul, dosen, deadline, status, deskripsi, onHapus }) {
@@ -25,7 +25,7 @@ function KartuTugas({ id, nama, matkul, dosen, deadline, status, deskripsi, onHa
               {matkul}
               {dosen && <span className="text-secondary"> &middot; {dosen}</span>}
             </p>
-            <LencanaStatus status={status} />
+            <Status status={status} />
           </div>
 
           <div className="col-12 col-sm-3 d-flex">

@@ -1,122 +1,57 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from "react";
+import RingkasanTugas from "./components/RingkasanTugas";
+import DaftarTugas from "./components/DaftarTugas";
+import FormTugas from "./components/FormTugas";
+import { matkulAwal, tugasAwal } from "./data/dataAwal";
+import HeaderApp from "./components/HeaderApp";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [daftarTugas, setDaftarTugas] = useState(tugasAwal);
+
+  function tambahTugas(dataBaru) {
+    const mk = matkulAwal.find((m) => m.nama === dataBaru.matkul);
+    const tugasBaru = {
+      id: Date.now(),
+      ...dataBaru,
+      dosen: mk ? mk.dosen : "",
+    };
+    setDaftarTugas([...daftarTugas, tugasBaru]);
+  }
+
+  function hapusTugas(id) {
+    setDaftarTugas(daftarTugas.filter((t) => t.id !== id));
+  }
+
+  const urutDeadline = (a, b) => new Date(a.deadline) - new Date(b.deadline);
+  const tugasAktif = daftarTugas.filter((t) => t.status !== "selesai").sort(urutDeadline);
+  const tugasSelesai = daftarTugas.filter((t) => t.status === "selesai").sort(urutDeadline);
+  const tugasUrut = [...tugasAktif, ...tugasSelesai];
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <HeaderApp
+        judul="DeadlineIn"
+        tagline="Catat tugas kuliah, ingat deadline-nya."
+      />
 
-      <div className="ticks"></div>
+      <main className="container py-4 py-md-5">
+        <RingkasanTugas
+          jumlahAktif={tugasAktif.length}
+          jumlahSelesai={tugasSelesai.length}
+          tugasMendesak={tugasAktif[0] || null}
+        />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="row g-4">
+          <div className="col-12 col-lg-8">
+            <DaftarTugas daftarTugas={tugasUrut} onHapus={hapusTugas} />
+          </div>
+          <div className="col-12 col-lg-4">
+            <FormTugas daftarMatkul={matkulAwal} onTambah={tambahTugas} />
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      </main>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
