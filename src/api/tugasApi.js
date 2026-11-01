@@ -12,11 +12,12 @@ function ubahBentukData(todo) {
 }
 
 export async function ambilTugasDariApi() {
-  const response = await axios.get(ENDPOINT_TODOS, {
-    params: { limit: 8 },
-    timeout: 10000,
-  });
-  return response.data.todos.map(ubahBentukData);
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+    const response = await axios.get(ENDPOINT_TODOS, {
+        params: { limit: 8 },
+        timeout: 10000,
+   });
+   return response.data.todos.map(ubahBentukData);
 }
 
 export async function kirimTugasKeApi({ nama }) {
