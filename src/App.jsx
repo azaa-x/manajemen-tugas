@@ -5,6 +5,13 @@ import FormTugas from "./components/FormTugas";
 import { matkulAwal, tugasAwal } from "./data/dataAwal";
 import HeaderApp from "./components/HeaderApp";
 
+const menuUtama = [
+  { label: "Beranda", href: "#beranda" },
+  { label: "Daftar Tugas", href: "#daftar-tugas" },
+  { label: "Tambah Tugas", href: "#tambah-tugas" },
+  { label: "Mata Kuliah", href: "#mata-kuliah" },
+];
+
 function App() {
   const [daftarTugas, setDaftarTugas] = useState(tugasAwal);
 
@@ -29,10 +36,7 @@ function App() {
 
   return (
     <>
-      <HeaderApp
-        judul="DeadlineIn"
-        tagline="Catat tugas kuliah, ingat deadline-nya."
-      />
+      <HeaderApp judul="DeadlineIn" menu={menuUtama} />
 
       <main className="container py-4 py-md-5">
         <RingkasanTugas
