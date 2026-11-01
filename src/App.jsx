@@ -1,23 +1,31 @@
-import { useState } from "react";
-import RingkasanTugas from "./components/RingkasanTugas";
-import DaftarTugas from "./components/DaftarTugas";
-import FormTugas from "./components/FormTugas";
-import { matkulAwal, tugasAwal } from "./data/dataAwal";
+import { useState, useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import HeaderApp from "./components/HeaderApp";
-import TugasDariApi from "./components/TugasDariApi";
+import Beranda from "./pages/Beranda";
+import DaftarTugasPage from "./pages/DaftarTugasPage";
+import TambahTugasPage from "./pages/TambahTugasPage";
+import MatkulPage from "./pages/MatkulPage";
+import TidakDitemukan from "./pages/TidakDitemukan";
+import { matkulAwal, tugasAwal } from "./data/dataAwal";
 
 const menuUtama = [
-  { label: "Beranda", href: "#beranda" },
-  { label: "Daftar Tugas", href: "#daftar-tugas" },
-  { label: "Tambah Tugas", href: "#tambah-tugas" },
-  { label: "Mata Kuliah", href: "#mata-kuliah" },
+  { label: "Beranda", to: "/" },
+  { label: "Daftar Tugas", to: "/tugas" },
+  { label: "Tambah Tugas", to: "/tambah" },
+  { label: "Mata Kuliah", to: "/matkul" },
 ];
 
 function App() {
   const [daftarTugas, setDaftarTugas] = useState(tugasAwal);
+  const [daftarMatkul, setDaftarMatkul] = useState(matkulAwal);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   function tambahTugas(dataBaru) {
-    const mk = matkulAwal.find((m) => m.nama === dataBaru.matkul);
+    const mk = daftarMatkul.find((m) => m.nama === dataBaru.matkul);
     const tugasBaru = {
       id: Date.now(),
       ...dataBaru,
@@ -30,33 +38,46 @@ function App() {
     setDaftarTugas(daftarTugas.filter((t) => t.id !== id));
   }
 
+  function tambahMatkul(matkulBaru) {
+    setDaftarMatkul([...daftarMatkul, matkulBaru]);
+  }
+
   const urutDeadline = (a, b) => new Date(a.deadline) - new Date(b.deadline);
   const tugasAktif = daftarTugas.filter((t) => t.status !== "selesai").sort(urutDeadline);
   const tugasSelesai = daftarTugas.filter((t) => t.status === "selesai").sort(urutDeadline);
   const tugasUrut = [...tugasAktif, ...tugasSelesai];
+  const jumlahMatkul = new Set(tugasAktif.map((t) => t.matkul)).size;
 
   return (
     <>
       <HeaderApp judul="DeadlineIn" menu={menuUtama} />
 
       <main className="container py-4 py-md-5">
-        <RingkasanTugas
-          jumlahAktif={tugasAktif.length}
-          jumlahSelesai={tugasSelesai.length}
-          tugasMendesak={tugasAktif[0] || null}
-        />
-
-        <div className="row g-4">
-          <div className="col-12 col-lg-8">
-            <DaftarTugas daftarTugas={tugasUrut} onHapus={hapusTugas} />
-          </div>
-          <div className="col-12 col-lg-4">
-            <FormTugas daftarMatkul={matkulAwal} onTambah={tambahTugas} />
-          </div>
-        </div>
-        <div className="mt-4">
-          <TugasDariApi />
-        </div>
+        <Routes>
+          <Route
+            path="/"
+            element={<Beranda tugasAktif={tugasAktif} jumlahMatkul={jumlahMatkul} />}
+          />
+          <Route
+            path="/tugas"
+            element={<DaftarTugasPage daftarTugas={tugasUrut} onHapus={hapusTugas} />}
+          />
+          <Route
+            path="/tambah"
+            element={<TambahTugasPage daftarMatkul={daftarMatkul} onTambah={tambahTugas} />}
+          />
+          <Route
+            path="/matkul"
+            element={
+              <MatkulPage
+                daftarMatkul={daftarMatkul}
+                daftarTugas={daftarTugas}
+                onTambahMatkul={tambahMatkul}
+              />
+            }
+          />
+          <Route path="*" element={<TidakDitemukan />} />
+        </Routes>
       </main>
     </>
   );

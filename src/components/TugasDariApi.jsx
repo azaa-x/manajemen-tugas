@@ -4,15 +4,12 @@ import ItemTugasApi from "./ItemTugasApi";
 import FormKirimTugas from "./FormKirimTugas";
 
 function TugasDariApi() {
-  // Tiga kondisi disimpan sebagai state terpisah (pola Modul 7.5).
   const [daftarApi, setDaftarApi] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Setiap kali nilainya naik, useEffect dijalankan lagi (dipakai tombol "Coba Lagi").
   const [percobaan, setPercobaan] = useState(0);
 
   useEffect(() => {
-    // Penanda agar hasil request lama diabaikan jika effect dijalankan ulang.
     let dibatalkan = false;
 
     async function muatData() {
@@ -34,6 +31,10 @@ function TugasDariApi() {
     };
   }, [percobaan]);
 
+  const jumlahDariServer = daftarApi.filter((t) => !t.baru).length;
+  const jumlahSelesai = daftarApi.filter((t) => t.selesai).length;
+  const persen = daftarApi.length === 0 ? 0 : Math.round((jumlahSelesai / daftarApi.length) * 100);
+
   function cobaLagi() {
     setPercobaan(percobaan + 1);
   }
@@ -52,9 +53,22 @@ function TugasDariApi() {
       <div className="row g-4">
         <div className="col-12 col-lg-8">
           {loading && (
-            <div className="kosong-tugas text-center" role="status">
-              <div className="spinner-border text-secondary mb-2" aria-hidden="true"></div>
-              <p className="fw-bold mb-0">Memuat data dari server...</p>
+            <div role="status">
+              <p className="fw-bold d-flex align-items-center gap-2">
+                <span className="spinner-border spinner-border-sm text-secondary" aria-hidden="true"></span>
+                Memuat data dari server...
+              </p>
+              <ul className="list-unstyled d-grid gap-2 mb-0" aria-hidden="true">
+                {[1, 2, 3, 4].map((n) => (
+                  <li key={n} className="item-api d-flex align-items-center gap-3 placeholder-glow">
+                    <span className="ikon-status placeholder"></span>
+                    <div className="flex-grow-1">
+                      <span className="placeholder col-7 d-block mb-2"></span>
+                      <span className="placeholder col-3 d-block"></span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
@@ -80,17 +94,35 @@ function TugasDariApi() {
 
           {!loading && !error && daftarApi.length > 0 && (
             <>
-              <p className="text-secondary">
-                Berhasil memuat {daftarApi.length} tugas dari server.
+              <p className="fw-bold mb-2">
+                Berhasil memuat {jumlahDariServer} tugas dari server.
               </p>
-              <ul className="list-group">
+              <div className="mb-3">
+                <div className="d-flex justify-content-between small text-secondary mb-1">
+                  <span>{jumlahSelesai} dari {daftarApi.length} tugas selesai</span>
+                  <span>{persen}%</span>
+                </div>
+                <div
+                  className="progress"
+                  role="progressbar"
+                  aria-label="Progres tugas selesai"
+                  aria-valuenow={persen}
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div className="progress-bar bg-success" style={{ width: `${persen}%` }}></div>
+                </div>
+              </div>
+
+              <ul className="list-unstyled d-grid gap-2 mb-0">
                 {daftarApi.map((tugas) => (
                   <ItemTugasApi
                     key={tugas.id}
                     id={tugas.id}
-                    title={tugas.title}
-                    completed={tugas.completed}
+                    nama={tugas.nama}
+                    selesai={tugas.selesai}
                     userId={tugas.userId}
+                    baru={tugas.baru}
                   />
                 ))}
               </ul>

@@ -1,6 +1,6 @@
 import { formatTanggal } from "../utils/tanggal";
 
-function RingkasanTugas({ jumlahAktif, jumlahSelesai, tugasMendesak }) {
+function RingkasanTugas({ jumlahAktif, jumlahMatkul, tugasMendesak }) {
   return (
     <div className="row g-3 mb-4">
       <div className="col-12 col-md-4">
@@ -34,8 +34,8 @@ function RingkasanTugas({ jumlahAktif, jumlahSelesai, tugasMendesak }) {
       <div className="col-12 col-md-4">
         <div className="card h-100 shadow-sm border-0">
           <div className="card-body">
-            <h2 className="h6 text-secondary">Tugas selesai</h2>
-            <p className="display-5 fw-bold mb-0">{jumlahSelesai}</p>
+            <h2 className="h6 text-secondary">Mata kuliah</h2>
+            <p className="display-5 fw-bold mb-0">{jumlahMatkul}</p>
           </div>
         </div>
       </div>

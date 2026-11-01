@@ -28,15 +28,17 @@ function KartuTugas({ id, nama, matkul, dosen, deadline, status, deskripsi, onHa
             <Status status={status} />
           </div>
 
-          <div className="col-12 col-sm-3 d-flex">
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-danger flex-fill"
-              onClick={() => onHapus(id)}
-            >
-              Hapus
-            </button>
-          </div>
+          {onHapus && (
+            <div className="col-12 col-sm-3 d-flex">
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-danger flex-fill"
+                onClick={() => onHapus(id)}
+              >
+                Hapus
+              </button>
+            </div>
+          )}
         </div>
 
         {deskripsi && <p className="deskripsi-tugas mt-3 mb-0">{deskripsi}</p>}

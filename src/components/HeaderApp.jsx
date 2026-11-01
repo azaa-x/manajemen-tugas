@@ -1,20 +1,19 @@
 import { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 
 function HeaderApp({ judul, menu }) {
   const [menuTerbuka, setMenuTerbuka] = useState(false);
-  const [menuAktif, setMenuAktif] = useState(menu[0].label);
 
-  function pilihMenu(label) {
-    setMenuAktif(label);
+  function tutupMenu() {
     setMenuTerbuka(false);
   }
 
   return (
     <nav className="navbar navbar-expand-md navbar-deadlinein bg-white sticky-top">
       <div className="container">
-        <a className="navbar-brand" href="#beranda" onClick={() => pilihMenu(menu[0].label)}>
+        <Link className="navbar-brand" to="/" onClick={tutupMenu}>
           {judul}
-        </a>
+        </Link>
 
         <button
           className="navbar-toggler"
@@ -33,15 +32,15 @@ function HeaderApp({ judul, menu }) {
         >
           <ul className="navbar-nav ms-auto">
             {menu.map((item) => (
-              <li className="nav-item" key={item.label}>
-                <a
-                  className={`nav-link ${menuAktif === item.label ? "active" : ""}`}
-                  aria-current={menuAktif === item.label ? "page" : undefined}
-                  href={item.href}
-                  onClick={() => pilihMenu(item.label)}
+              <li className="nav-item" key={item.to}>
+                <NavLink
+                  className="nav-link"
+                  to={item.to}
+                  end={item.to === "/"}
+                  onClick={tutupMenu}
                 >
                   {item.label}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>

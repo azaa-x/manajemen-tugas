@@ -17,13 +17,8 @@ function FormKirimTugas({ onBerhasil }) {
     try {
       setMengirim(true);
       setPesan(null);
-      const hasil = await kirimTugasKeApi({
-        title: judul.trim(),
-        completed: false,
-        userId: 1,
-      });
-      
-      onBerhasil({ ...hasil, id: `baru-${Date.now()}` });
+      const hasil = await kirimTugasKeApi({ nama: judul.trim() });
+      onBerhasil({ ...hasil, id: `baru-${Date.now()}`, baru: true });
       setJudul("");
       setPesan({
         jenis: "success",
@@ -40,8 +35,11 @@ function FormKirimTugas({ onBerhasil }) {
   }
 
   return (
-    <form onSubmit={kirimForm} noValidate>
-      <h3 className="h6">Kirim tugas ke server</h3>
+    <form onSubmit={kirimForm} noValidate className="kotak-form">
+      <h3 className="h6 fw-bold">Kirim tugas ke server</h3>
+      <p className="text-secondary small">
+        Tugas dikirim dengan POST. Server tiruan hanya membalas, tidak menyimpannya.
+      </p>
       <div className="mb-3">
         <label htmlFor="judulApi" className="form-label">Judul Tugas</label>
         <input
