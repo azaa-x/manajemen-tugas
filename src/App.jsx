@@ -4,6 +4,7 @@ import DaftarTugas from "./components/DaftarTugas";
 import FormTugas from "./components/FormTugas";
 import { matkulAwal, tugasAwal } from "./data/dataAwal";
 import HeaderApp from "./components/HeaderApp";
+import TugasDariApi from "./components/TugasDariApi";
 
 const menuUtama = [
   { label: "Beranda", href: "#beranda" },
@@ -52,6 +53,9 @@ function App() {
           <div className="col-12 col-lg-4">
             <FormTugas daftarMatkul={matkulAwal} onTambah={tambahTugas} />
           </div>
+        </div>
+        <div className="mt-4">
+          <TugasDariApi />
         </div>
       </main>
     </>
